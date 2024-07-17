@@ -78,9 +78,9 @@ class DataHandler:
         for processed_image, image_path, page in self.image_manager.process_image(file_info):
             if self.do_ocr:
                 try:
-                    self.logger.info(f"Start extracting text from {page} page of {file_info.file_path}")
+                    self.logger.debug(f"Start extracting text from {page} page of {file_info.file_path}")
                     text = self.ocr_engine.extract_text(processed_image, pages=[page])
-                    self.logger.debug(f"End extracting text from {image_path}")
+                    self.logger.debug(f"End extracting text {page} page of {file_info.file_path}")
                 except Exception as e:
                     self.logger.error(f"Error occurred while doing OCR on {file_info.file_path}: {e}")
                     text = ''
