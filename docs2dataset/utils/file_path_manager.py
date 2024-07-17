@@ -8,8 +8,7 @@ import logging
 
 
 class FilePathManager:
-    def __init__(self, input_path, max_docs_per_class=None, batch_size_per_worker=1, smart_shuffle=False,
-                 logging_level=logging.INFO):
+    def __init__(self, input_path, max_docs_per_class, batch_size_per_worker, smart_shuffle, logging_level):
         self.input_path = Path(input_path)
         self.max_docs_per_class = max_docs_per_class
         self.batch_size_per_worker = batch_size_per_worker

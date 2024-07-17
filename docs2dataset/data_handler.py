@@ -1,6 +1,7 @@
 # File: data_handler.py
 from multiprocessing import Pool
 from pathlib import Path
+import logging
 
 import pandas as pd
 
@@ -37,24 +38,23 @@ class DataHandler:
             ocr_engine='Tesseract', batch_size_per_worker=10, logging_level='INFO', do_ocr=True,
             smart_shuffle=False, megapixel=3, size_threshold_mb=5, image_processor=None
     ):
+        self.logging_level = getattr(logging, logging_level.upper(), logging.INFO)
         self.output_path = Path(output_path)
         self.batch_size_per_worker = batch_size_per_worker
         self.num_workers = num_workers
         self.dpi = dpi
         self.csv_name = csv_name
         self.ocr_engine = PytesseractOCR(ocr_lang) if ocr_engine == 'Tesseract' else None
-        self.logger = setup_logger('DataHandler', logging_level)
+        self.logger = setup_logger('DataHandler', self.logging_level)
         self.do_ocr = do_ocr
         self.file_path_manager = FilePathManager(
-            input_path=input_path, max_docs_per_class=max_docs_per_class,
-            batch_size_per_worker=batch_size_per_worker, smart_shuffle=smart_shuffle
+            input_path=input_path, max_docs_per_class=max_docs_per_class, batch_size_per_worker=batch_size_per_worker,
+            smart_shuffle=smart_shuffle, logging_level=self.logging_level
         )
-        if target_pages is None:
-            target_pages = [0]
         self.image_manager = ImageManager(
             image_processor=image_processor,save_processed_img=save_processed_img,
-            output_path=self.output_path / 'image_data', target_pages=target_pages,
-            megapixel=megapixel, size_threshold_mb=size_threshold_mb
+            output_path=self.output_path / 'image_data', target_pages=target_pages, megapixel=megapixel,
+            size_threshold_mb=size_threshold_mb, logging_level=self.logging_level, dpi=dpi
         )
 
     def create_dataset(self):

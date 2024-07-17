@@ -12,8 +12,8 @@ Image.MAX_IMAGE_PIXELS = None
 
 
 class ImageManager:
-    def __init__(self, image_processor=None, save_processed_img=True, output_path=None, target_pages=None,
-                 dpi=300, logging_level=logging.INFO, megapixel=3, size_threshold_mb=5):
+    def __init__(self, image_processor, save_processed_img, output_path, target_pages,
+                 dpi, logging_level, megapixel, size_threshold_mb):
         self.logger = setup_logger(self.__class__.__name__, logging_level)
         self.image_processor = image_processor
         self.save_processed_img = save_processed_img
@@ -120,7 +120,7 @@ class ImageManager:
             yield processed_image, image_path, page_num
 
     def correct_image(self, image, file: FileInfo):
-        self.logger.info(f"Correcting image {file.file_path}")
+        self.logger.debug(f"Correcting image {file.file_path}")
         max_pixels = 1000000 * self.megapixel
 
         # Check if the image is a PIL Image or a NumPy array
@@ -138,7 +138,7 @@ class ImageManager:
                 image = image.resize(new_size, Image.Resampling.LANCZOS)
             elif isinstance(image, np.ndarray):
                 image = cv2.resize(image, new_size, interpolation=cv2.INTER_LANCZOS4)
-            self.logger.info(
+            self.logger.debug(
                 f"Resized source {(width * height) / 1000000} MP image to {new_size} to meet {self.megapixel} MP requirement")
         return image
 
@@ -171,12 +171,12 @@ class ImageManager:
                         self.logger.info(f"Saved image with compression at quality {quality}")
                         break
                 else:
-                    self.logger.warning(f"Could not reduce image size below 5 MB even with maximum compression")
+                    self.logger.warning(f"Could not reduce image size below {self.size_threshold_mb} MB even with maximum compression")
             else:
-                self.logger.debug(f"Image size {file_size / (1024 * 1024)}is under 5 MB without compression")
+                self.logger.debug(f"Image size {file_size / (1024 * 1024)} MB is under {self.size_threshold_mb} MB without compression")
 
             with open(output_file_path, 'wb') as f:
                 f.write(buffer)
-            self.logger.info(f"Saved processed image to: {output_file_path}")
+            self.logger.debug(f"Saved processed image to: {output_file_path}")
             return output_file_path
         return None
