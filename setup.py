@@ -8,7 +8,6 @@ setup(
     install_requires=[
         'pillow',
         'pytesseract',
-        'easyocr',
         'PyMuPDF',
         'numpy',
         'setuptools',
