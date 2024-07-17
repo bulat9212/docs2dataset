@@ -49,7 +49,7 @@ class ImageManager:
                     image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
                 processed_image = self.correct_image(image_np, file)  # Process using the corrected image
-                if self.save_processed_img:
+                if self.image_processor:
                     processed_image = self.image_processor.run(processed_image)
 
                 if self.save_processed_img:
@@ -77,7 +77,8 @@ class ImageManager:
             image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
             processed_image = self.correct_image(image_np, file)
-            processed_image = self.image_processor.run(processed_image)
+            if self.image_processor:
+                processed_image = self.image_processor.run(processed_image)
 
             if self.save_processed_img:
                 image_path = self.save_image(processed_image, file, page_num)
@@ -108,7 +109,8 @@ class ImageManager:
             image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
             processed_image = self.correct_image(image_np, file)
-            processed_image = self.image_processor.run(processed_image)
+            if self.image_processor:
+                processed_image = self.image_processor.run(processed_image)
 
             if self.save_processed_img:
                 image_path = self.save_image(processed_image, file, page_num)
