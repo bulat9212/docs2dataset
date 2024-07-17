@@ -9,6 +9,7 @@ from .utils.logging_utils import setup_logger
 from .utils.image_manager import ImageManager
 from .utils.file_path_manager import FilePathManager
 from .utils.file_info import FileInfo
+from .utils.file_utils import create_directory
 from .ocr.implementations.pytesseract_ocr import PytesseractOCR
 
 
@@ -39,7 +40,7 @@ class DataHandler:
             smart_shuffle=False, megapixel=3, size_threshold_mb=5, image_processor=None
     ):
         self.logging_level = getattr(logging, logging_level.upper(), logging.INFO)
-        self.output_path = Path(output_path)
+        self.output_path = create_directory(Path(output_path))
         self.batch_size_per_worker = batch_size_per_worker
         self.num_workers = num_workers
         self.dpi = dpi
