@@ -10,5 +10,9 @@ setup(
         'pytesseract',
         'easyocr',
         'PyMuPDF',
+        'numpy',
+        'setuptools',
+        'opencv-python',
+        'pandas'
     ],
 )
