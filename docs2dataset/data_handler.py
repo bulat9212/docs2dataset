@@ -1,11 +1,15 @@
 # File: data_handler.py
-import pandas as pd
 from multiprocessing import Pool
+from pathlib import Path
+
+import pandas as pd
+
 from .utils.logging_utils import setup_logger
 from .utils.image_manager import ImageManager
 from .utils.file_path_manager import FilePathManager
 from .utils.file_info import FileInfo
-from pathlib import Path
+from .ocr.implementations.pytesseract_ocr import PytesseractOCR
+
 
 # todo
 # write bad images to separate log file of file csv
@@ -13,7 +17,6 @@ from pathlib import Path
 # adjust logging for multiprocessing, create log file, check that log was setuped once,add more log messages,debug logs
 # typehints, refactor
 # revise project structure
-# add params by default
 # add timings logging, log mean img processing time
 # add requirements
 # add tesseract htop importance parameter
@@ -28,24 +31,31 @@ from pathlib import Path
 
 
 class DataHandler:
-    def __init__(self, input_path, output_path, max_docs_per_class, batch_size_per_worker, num_workers, dpi,
-                 save_processed_img, csv_name, target_pages, ocr_lang,
-                 ocr_engine, logging_level='INFO', do_ocr=True, smart_shuffle=False, megapixel=3, size_threshold_mb=5,
-                 image_processor=None):
+    def __init__(
+            self, input_path, output_path, max_docs_per_class,
+            csv_name='data.csv', num_workers=1, dpi=300, save_processed_img=False, target_pages=None, ocr_lang='rus',
+            ocr_engine='Tesseract', batch_size_per_worker=10, logging_level='INFO', do_ocr=True,
+            smart_shuffle=False, megapixel=3, size_threshold_mb=5, image_processor=None
+    ):
         self.output_path = Path(output_path)
         self.batch_size_per_worker = batch_size_per_worker
         self.num_workers = num_workers
         self.dpi = dpi
         self.csv_name = csv_name
-        self.target_pages = target_pages
-        self.ocr_lang = ocr_lang
-        self.ocr_engine = ocr_engine
+        self.ocr_engine = PytesseractOCR(ocr_lang) if ocr_engine == 'Tesseract' else None
         self.logger = setup_logger('DataHandler', logging_level)
         self.do_ocr = do_ocr
-        self.file_path_manager = FilePathManager(input_path, max_docs_per_class, batch_size_per_worker, smart_shuffle=smart_shuffle)
-        self.image_manager = ImageManager(image_processor=image_processor,
-                                          save_processed_img=save_processed_img, output_path=self.output_path / 'image_data',
-                                          target_pages=self.target_pages, megapixel=megapixel, size_threshold_mb=size_threshold_mb)
+        self.file_path_manager = FilePathManager(
+            input_path=input_path, max_docs_per_class=max_docs_per_class,
+            batch_size_per_worker=batch_size_per_worker, smart_shuffle=smart_shuffle
+        )
+        if target_pages is None:
+            target_pages = [0]
+        self.image_manager = ImageManager(
+            image_processor=image_processor,save_processed_img=save_processed_img,
+            output_path=self.output_path / 'image_data', target_pages=target_pages,
+            megapixel=megapixel, size_threshold_mb=size_threshold_mb
+        )
 
     def create_dataset(self):
         results = []
@@ -68,7 +78,7 @@ class DataHandler:
         for processed_image, image_path, page in self.image_manager.process_image(file_info):
             if self.do_ocr:
                 try:
-                    self.logger.info(f"Start extracting text from {image_path}")
+                    self.logger.info(f"Start extracting text from {page} page of {file_info.file_path}")
                     text = self.ocr_engine.extract_text(processed_image, pages=[page])
                     self.logger.debug(f"End extracting text from {image_path}")
                 except Exception as e:
