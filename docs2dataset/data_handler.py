@@ -30,7 +30,8 @@ from pathlib import Path
 class DataHandler:
     def __init__(self, input_path, output_path, max_docs_per_class, batch_size_per_worker, num_workers, dpi,
                  save_processed_img, csv_name, target_pages, ocr_lang,
-                 image_processor, ocr_engine, logging_level='INFO', do_ocr=True, smart_shuffle=False, megapixel=3, size_threshold_mb=5):
+                 ocr_engine, logging_level='INFO', do_ocr=True, smart_shuffle=False, megapixel=3, size_threshold_mb=5,
+                 image_processor=None):
         self.output_path = Path(output_path)
         self.batch_size_per_worker = batch_size_per_worker
         self.num_workers = num_workers
