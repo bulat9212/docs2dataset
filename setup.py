@@ -10,7 +10,7 @@ setup(
         'pytesseract',
         'PyMuPDF',
         'numpy',
-        'setuptools',
+        'setuptools==70.0.0',
         'opencv-python',
         'pandas'
     ],

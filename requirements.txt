@@ -1,6 +1,6 @@
 numpy~=1.24.4
 pillow~=10.4.0
-setuptools~=68.2.0
+setuptools==70.0.0
 pytesseract~=0.3.10
 opencv-python~=4.5.5
 pandas~=2.0.3
