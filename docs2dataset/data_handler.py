@@ -30,6 +30,8 @@ from .ocr.implementations.pytesseract_ocr import PytesseractOCR
 # refactor smart_shuffle
 # save used data handler config file to the output dir
 # add proper handling of DecompositionBombWarning
+# rewrite ImageManager to use fabric pattern with interface and implementations of ImageManagers
+# add pdf2img instead PyMuPDF
 
 
 class DataHandler:
