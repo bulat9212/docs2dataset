@@ -31,13 +31,21 @@ pip install -e docs2dataset
 
 ```python
 from docs2dataset import DataHandler
+from docs2dataset.preprocessing import ImageProcessorInterface
+
+
+custom_processor: ImageProcessorInterface = your_custom_processor_implementation
 
 dataset_creator = DataHandler(
+    # required
     input_path='path_to_docs_dir',
     output_path='dataset',
     max_docs_per_class=10,
-    save_processed_img=True,
-    target_pages=[0, 1, -1]
+    # optional
+    image_processor=custom_processor,
+    target_pages=[0, 1, -1], # will process all pages by default 
+    save_processed_img=True, # False by default
+    do_ocr=True              # True by default
 )
 
 dataset = dataset_creator.create_dataset()
@@ -69,6 +77,16 @@ dataset = dataset_creator.create_dataset()
 #       |-doc_example4_page[0].jpg
 
 ```
+
+### Example Output CSV
+
+
+| SourceFilename   | Page | Text                | Class   | PreprocessedFilename     |
+|------------------|------|---------------------|---------|--------------------------|
+| doc_example1.pdf | 0    | ocr recognized text | Class_A | doc_example1_page[0].jpg |
+| ...              | ...  | ...                 | ...     | ...                      |
+| doc_example4.pdf | 0    | ocr recognized text | Class_C | doc_example4_page[0].jpg |
+
 
 ## TODO
 
