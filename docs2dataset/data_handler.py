@@ -13,27 +13,6 @@ from .utils.file_utils import create_directory
 from .ocr.implementations.pytesseract_ocr import PytesseractOCR
 
 
-# todo
-# write bad images to separate log file of file csv
-# add datailed info about image size to the final csv
-# adjust logging for multiprocessing, create log file, check that log was setuped once,add more log messages,debug logs
-# typehints, refactor
-# revise project structure
-# add timings logging, log mean img processing time
-# add requirements
-# add tesseract htop importance parameter
-# properly filter 0 confidence tokens
-# avoid .dirs
-# add tests
-# handle also -2 -3 pages not only -1
-# angle align multiprocessing issue
-# refactor smart_shuffle
-# save used data handler config file to the output dir
-# add proper handling of DecompositionBombWarning
-# rewrite ImageManager to use fabric pattern with interface and implementations of ImageManagers
-# add pdf2img instead PyMuPDF
-
-
 class DataHandler:
     def __init__(
             self, input_path, output_path, max_docs_per_class,
