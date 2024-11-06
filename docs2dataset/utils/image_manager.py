@@ -63,10 +63,17 @@ class ImageManager:
         document = fitz.open(file_path)
         num_pages = len(document)
 
-        if self.target_pages is None:
-            self.target_pages = list(range(num_pages))
+        # Define the target pages, defaulting to all pages if none are specified
+        current_target_pages = self.target_pages or range(num_pages)
 
-        pages_to_process = list(set(p if p != -1 else num_pages - 1 for p in self.target_pages if p < num_pages))
+        # Handle negative page numbers, converting them to appropriate page indices
+        pages_to_process = set(
+            # If the page number is negative (p < 0), calculate the corresponding positive index
+            (num_pages + p) if p < 0 else p
+            for p in current_target_pages
+            # Ensure the resulting page index is within valid bounds
+            if 0 <= (num_pages + p) < num_pages or p >= 0
+        )
 
         for page_num in sorted(pages_to_process):
             page = document.load_page(page_num)
