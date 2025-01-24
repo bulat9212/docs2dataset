@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 
 class OCRAbstract(ABC):
     @abstractmethod
-    def extract_text(self, image, pages=None):
+    def recognize(self, image, pages=None):
         pass
 
     @property

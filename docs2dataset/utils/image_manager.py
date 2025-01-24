@@ -161,9 +161,9 @@ class ImageManager:
             class_output_path.mkdir(parents=True, exist_ok=True)
 
             if page_num is not None:
-                output_file_name = f"{file.file_path.stem}_page[{page_num}].jpg"
+                output_file_name = f"{class_dir}__{file.file_path.stem}_page[{page_num}].jpg"
             else:
-                output_file_name = f"{file.file_path.stem}.jpg"
+                output_file_name = f"{class_dir}__{file.file_path.stem}.jpg"
 
             output_file_path = class_output_path / output_file_name
 
