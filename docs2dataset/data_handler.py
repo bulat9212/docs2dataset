@@ -11,7 +11,7 @@ from .utils.file_path_manager import FilePathManager
 from .utils.file_info import FileInfo
 from .utils.file_utils import create_directory
 from .ocr.implementations.pytesseract_ocr import PytesseractOCR
-
+from .utils import save_run_params
 
 class DataHandler:
     def __init__(
@@ -52,6 +52,7 @@ class DataHandler:
 
         dataset = pd.concat(results, ignore_index=True)
         dataset.to_csv(self.output_path / self.csv_name, index=False)
+        save_run_params(self)
         self.logger.info("Dataset creation complete.")
         return dataset
 
