@@ -15,28 +15,45 @@ from .utils import save_run_params
 
 class DataHandler:
     def __init__(
-            self, input_path, output_path, max_docs_per_class,
-            csv_name='data.csv', num_workers=1, dpi=300, save_processed_img=False, target_pages=None, ocr_lang='rus',
+            self, input_path: str, output_path: str, max_docs_per_class: int,
+            csv_name: str ='data.csv', num_workers=1, dpi=300, save_processed_img=False, target_pages=None, ocr_lang='rus',
             ocr_engine='Tesseract', batch_size_per_worker=10, logging_level='INFO', do_ocr=True,
             smart_shuffle=False, megapixel=3, size_threshold_mb=5, image_processor=None
     ):
+        # Setup logging
         self.logging_level = getattr(logging, logging_level.upper(), logging.INFO)
-        self.output_path = create_directory(Path(output_path))
-        self.batch_size_per_worker = batch_size_per_worker
-        self.num_workers = num_workers
-        self.dpi = dpi
-        self.csv_name = csv_name
-        self.ocr_engine = PytesseractOCR(ocr_lang) if ocr_engine == 'Tesseract' else None
         self.logger = setup_logger('DataHandler', self.logging_level)
+
+        # Main handler args
+        self.output_path = create_directory(Path(output_path))
+        self.num_workers = num_workers
+        self.csv_name = csv_name
         self.do_ocr = do_ocr
+
+        # Ocr Engine and Initialization
+        self.ocr_lang = ocr_lang
+        self.ocr_engine = PytesseractOCR(ocr_lang) if ocr_engine == 'Tesseract' else ocr_engine
+
+        # FilePathManager args and Initialization
+        self.batch_size_per_worker = batch_size_per_worker
+        self.max_docs_per_class = max_docs_per_class
+        self.smart_shuffle = smart_shuffle
+        self.input_path = Path(input_path)
         self.file_path_manager = FilePathManager(
-            input_path=input_path, max_docs_per_class=max_docs_per_class, batch_size_per_worker=batch_size_per_worker,
-            smart_shuffle=smart_shuffle, logging_level=self.logging_level
+            input_path=self.input_path, max_docs_per_class=self.max_docs_per_class, smart_shuffle=self.smart_shuffle,
+            logging_level=self.logging_level, batch_size_per_worker=self.batch_size_per_worker
         )
+
+        # ImageManager args and Initialization
+        self.save_processed_img = save_processed_img
+        self.size_threshold_mb = size_threshold_mb
+        self.target_pages = target_pages
+        self.megapixel = megapixel
+        self.dpi = dpi
         self.image_manager = ImageManager(
-            image_processor=image_processor,save_processed_img=save_processed_img,
-            output_path=self.output_path / 'image_data', target_pages=target_pages, megapixel=megapixel,
-            size_threshold_mb=size_threshold_mb, logging_level=self.logging_level, dpi=dpi
+            image_processor=image_processor, save_processed_img=self.save_processed_img, megapixel=self.megapixel,
+            output_path=self.output_path / 'image_data', target_pages=self.target_pages, dpi=self.dpi,
+            size_threshold_mb=self.size_threshold_mb, logging_level=self.logging_level
         )
 
     def create_dataset(self):
