@@ -1,6 +1,4 @@
-# File: tests/test_data_handler.py
-from docs2dataset.data_handler import DataHandler
-from docs2dataset.ocr.implementations.pytesseract_ocr import PytesseractOCR
+from docs2dataset.core.data_handler import DataHandler
 
 import unittest
 

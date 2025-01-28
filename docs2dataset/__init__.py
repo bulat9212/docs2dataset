@@ -1,2 +1,1 @@
-# docs2dataset/__init__.py
-from .data_handler import DataHandler
+from docs2dataset.core.data_handler import DataHandler

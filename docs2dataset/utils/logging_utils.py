@@ -1,26 +1,35 @@
 import logging
+from logging import Logger
 
+def setup_logger(name: str, level: int = logging.INFO, log_file: str = "app.log") -> Logger:
+    """
+    Sets up a logger with a stream handler (console) and file handler.
 
-def setup_logger(name, level=logging.INFO, log_file='app.log'):
-    """Function to set up a logger with the given name, level, and log file."""
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(process)d - %(message)s'
-    )
+    Args:
+        name (str): Name of the logger.
+        level (int): Logging level (from logging module).
+        log_file (str): Path to the log file.
 
-    # Stream handler for console output
+    Returns:
+        logging.Logger: A configured logger object.
+    """
+    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(process)d - %(message)s")
+
+    # Stream handler
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(formatter)
 
-    # File handler for logging to a file
+    # File handler
     file_handler = logging.FileHandler(log_file)
     file_handler.setFormatter(formatter)
 
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
-    # Add both handlers to the logger
-    logger.addHandler(stream_handler)
-    logger.addHandler(file_handler)
+    # Avoid adding multiple handlers if they already exist
+    if not logger.handlers:
+        logger.addHandler(stream_handler)
+        logger.addHandler(file_handler)
 
     logger.propagate = False
     return logger
