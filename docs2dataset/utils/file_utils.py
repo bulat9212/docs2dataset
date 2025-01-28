@@ -1,9 +1,7 @@
-# File: utils/file_utils.py
 from pathlib import Path
 
 
-def create_directory(base_path):
-    base_path = Path(base_path)
+def create_directory(base_path: Path) -> Path:
     if not base_path.exists():
         base_path.mkdir(parents=True)
         return base_path
@@ -17,5 +15,5 @@ def create_directory(base_path):
         index += 1
 
 
-def is_image_file(file_path):
-    return file_path.suffix.lower() in ['.png', '.jpg', '.jpeg', '.tiff', '.tif', '.bmp', '.gif', '.pdf']
+def is_image_file(file_path: Path) -> bool:
+    return file_path.suffix.lower() in [".png", ".jpg", ".jpeg", ".tiff", ".tif", ".bmp", ".gif", ".pdf"]
