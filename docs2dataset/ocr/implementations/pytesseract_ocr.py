@@ -1,14 +1,16 @@
-# File: ocr/implementations/pytesseract_ocr.py
+from typing import Iterable
+
+import numpy as np
 import pytesseract
-from PIL import Image
-from ..ocr_interface import OCRAbstract
+
+from ..ocr_interface import OCRInterface
 
 
-class PytesseractOCR(OCRAbstract):
-    def __init__(self, lang='rus'):
+class PytesseractOCR(OCRInterface):
+    def __init__(self, lang: str ='rus'):
         self.lang = lang
 
-    def recognize(self, image, pages=None):
+    def recognize(self, image: Iterable[np.ndarray]) -> Iterable[str]:
         ocr_data = pytesseract.image_to_data(
             image,
             lang=self.lang,
